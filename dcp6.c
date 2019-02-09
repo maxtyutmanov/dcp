@@ -14,69 +14,69 @@ functions that converts between nodes and memory addresses.
 */
 
 typedef struct {
-	int payload;
-	void* both;
+    int payload;
+    void* both;
 } Node;
 
 Node* head = NULL;
 Node* tail = NULL;
 
 void add(Node* node) {
-	if (head == NULL) {
-		node->both = NULL;
-		head = node;
-		tail = node;
-	}
-	else {
-		tail->both = (void*)((uintptr_t)(tail->both) ^ (uintptr_t)node);
-		node->both = tail;
-		
-		tail = node;
-	}
+    if (head == NULL) {
+        node->both = NULL;
+        head = node;
+        tail = node;
+    }
+    else {
+        tail->both = (void*)((uintptr_t)(tail->both) ^ (uintptr_t)node);
+        node->both = tail;
+        
+        tail = node;
+    }
 }
 
 Node* get(int index) {
-	uintptr_t prev = 0;
-	Node* cur = head;
-	Node* next = NULL;
-	int i = 0;
-	
-	if (index < 0) {
-		return NULL;
-	}
-	
-	while (cur != NULL && i < index) {
-		next = (Node*)(prev ^ (uintptr_t)(cur->both));
-		prev = (uintptr_t)cur;
-		cur = next;
-		++i;
-	}
-	
-	return cur;
+    uintptr_t prev = 0;
+    Node* cur = head;
+    Node* next = NULL;
+    int i = 0;
+    
+    if (index < 0) {
+        return NULL;
+    }
+    
+    while (cur != NULL && i < index) {
+        next = (Node*)(prev ^ (uintptr_t)(cur->both));
+        prev = (uintptr_t)cur;
+        cur = next;
+        ++i;
+    }
+    
+    return cur;
 }
 
 int main() {
-	int nodeCnt = 10;
-	int i;
-	Node* node;
-	
-	for (i = 0; i < nodeCnt; ++i) {
-		node = (Node*)malloc(sizeof(Node));
-		node->payload = i;
-		node->both = NULL;
-		
-		add(node);
-	}
-	
-	for (i = -10; i < nodeCnt + 10; ++i) {
-		node = get(i);
-		if (node != NULL) {
-			printf("%d ", node->payload);
-		}
-		else {
-			printf("\nNode not found...");
-		}
-	}
-	
-	return 0;
+    int nodeCnt = 10;
+    int i;
+    Node* node;
+    
+    for (i = 0; i < nodeCnt; ++i) {
+        node = (Node*)malloc(sizeof(Node));
+        node->payload = i;
+        node->both = NULL;
+        
+        add(node);
+    }
+    
+    for (i = -10; i < nodeCnt + 10; ++i) {
+        node = get(i);
+        if (node != NULL) {
+            printf("%d ", node->payload);
+        }
+        else {
+            printf("\nNode not found...");
+        }
+    }
+    
+    return 0;
 }
