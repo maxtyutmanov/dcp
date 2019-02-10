@@ -10,7 +10,7 @@ You can assume that the messages are decodable. For example, '001' is not allowe
 
 void Main()
 {
-	var msg = string.Join("", Enumerable.Repeat("123", 6));
+	var msg = string.Join("", Enumerable.Repeat("23", 10));
 	Solve(msg).Dump();
 	// 24157817
 }
