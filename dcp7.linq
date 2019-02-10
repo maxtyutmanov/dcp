@@ -10,7 +10,7 @@ You can assume that the messages are decodable. For example, '001' is not allowe
 
 void Main()
 {
-	var msg = string.Join("", Enumerable.Repeat("12", 50));
+	var msg = string.Join("", Enumerable.Repeat("123", 6));
 	Solve(msg).Dump();
 	// 24157817
 }
@@ -19,31 +19,35 @@ long Solve(string encodedStr)
 {
 	var numBase = Convert.ToByte('1');
 	var encodedBytes = encodedStr.Select(c => (byte)(Convert.ToByte(c) - numBase + 1)).ToArray();
-	var cache = new long[encodedBytes.Length];
 	
-	return Count(new ArraySegment<byte>(encodedBytes), cache);
+	return CountIterative(encodedBytes);
 }
 
-long Count(ArraySegment<byte> encoded, long[] cache)
+long CountIterative(byte[] encoded)
 {
-	if (encoded.Count == 0 || encoded.Count == 1)
+	if (encoded.Length < 2)
 		return 1;
-
-	if (cache[encoded.Offset] != 0)
-		return cache[encoded.Offset];
-
-	long oneDigitPrefixCount = 0;
-	long twoDigitPrefixCount = 0;
 	
-	oneDigitPrefixCount = Count(new ArraySegment<byte>(encoded.Array, encoded.Offset + 1, encoded.Count - 1), cache);
-		
-	var twoDigitPrefix = (encoded.First() * 10) + encoded.Skip(1).First();
-	if (twoDigitPrefix <= 26)
+	var prevCount = 1L;
+	var curCount = 1L;
+	
+	for (int i = encoded.Length - 2; i >= 0; --i)
 	{
-		twoDigitPrefixCount = Count(new ArraySegment<byte>(encoded.Array, encoded.Offset + 2, encoded.Count - 2), cache);
+		var num = (encoded[i] * 10 + encoded[i + 1]);
+		long newCount;
+		
+		if (num <= 26)
+		{
+			newCount = prevCount + curCount;
+		}
+		else
+		{
+			newCount = curCount;
+		}
+
+		prevCount = curCount;
+		curCount = newCount;
 	}
 	
-	var totalCount = oneDigitPrefixCount + twoDigitPrefixCount;
-	cache[encoded.Offset] = totalCount;
-	return totalCount;
+	return curCount;
 }
