@@ -10,30 +10,40 @@ You can assume that the messages are decodable. For example, '001' is not allowe
 
 void Main()
 {
-	Solve("333").Dump();
+	var msg = string.Join("", Enumerable.Repeat("12", 50));
+	Solve(msg).Dump();
+	// 24157817
 }
 
-int Solve(string encoded)
+long Solve(string encodedStr)
 {
-	var numBase = Encoding.ASCII.GetBytes(new[] { '1' })[0];
-	var encodedBytes = Encoding.ASCII.GetBytes(encoded).Select(b => (byte)(b + 1 - numBase)).ToArray();
-	encodedBytes.Dump();
+	var numBase = Convert.ToByte('1');
+	var encodedBytes = encodedStr.Select(c => (byte)(Convert.ToByte(c) - numBase + 1)).ToArray();
+	var cache = new long[encodedBytes.Length];
 	
-	return Count(new ArraySegment<byte>(encodedBytes));
+	return Count(new ArraySegment<byte>(encodedBytes), cache);
 }
 
-int Count(ArraySegment<byte> encoded)
+long Count(ArraySegment<byte> encoded, long[] cache)
 {
 	if (encoded.Count == 0 || encoded.Count == 1)
 		return 1;
+
+	if (cache[encoded.Offset] != 0)
+		return cache[encoded.Offset];
+
+	long oneDigitPrefixCount = 0;
+	long twoDigitPrefixCount = 0;
+	
+	oneDigitPrefixCount = Count(new ArraySegment<byte>(encoded.Array, encoded.Offset + 1, encoded.Count - 1), cache);
 		
-	var totalCount = Count(new ArraySegment<byte>(encoded.Array, encoded.Offset + 1, encoded.Count - 1));
-		
-	var twoDigitNum = (encoded.First() * 10) + encoded.Skip(1).First();
-	if (twoDigitNum <= 26)
+	var twoDigitPrefix = (encoded.First() * 10) + encoded.Skip(1).First();
+	if (twoDigitPrefix <= 26)
 	{
-		totalCount += Count(new ArraySegment<byte>(encoded.Array, encoded.Offset + 2, encoded.Count - 2));
+		twoDigitPrefixCount = Count(new ArraySegment<byte>(encoded.Array, encoded.Offset + 2, encoded.Count - 2), cache);
 	}
 	
+	var totalCount = oneDigitPrefixCount + twoDigitPrefixCount;
+	cache[encoded.Offset] = totalCount;
 	return totalCount;
 }
