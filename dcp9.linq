@@ -10,7 +10,7 @@ Follow-up: Can you do this in O(N) time and constant space?
 
 void Main()
 {
-	GetMaxSum(new[] { 5, 1, 1, 5 }).Dump();
+	GetMaxSum(new[] { -1, -1, 7, -1, -1 }).Dump();
 }
 
 int GetMaxSum(int[] a)
@@ -19,16 +19,17 @@ int GetMaxSum(int[] a)
 }
 
 (int currentSum, int oneStepAheadSum) GetMaxSum(int[] a, int i)
-{
-	if (i >= a.Length) return (0, 0);
-	
-	if (i == a.Length - 1) return (a[i], 0);
+{	
+	if (i == a.Length - 1) 
+		return (Math.Max(a[i], 0), 0);
 	
 	var (oneStepAheadSum, twoStepsAheadSum) = GetMaxSum(a, i + 1);
 
 	// compare two options: we either use oneStepAheadSum (and skip i-th item) 
 	// or use twoStepsAheadSum but in this case we can include i-th item (because it's not adjacent)
 	var maxSum = Math.Max(oneStepAheadSum, a[i] + twoStepsAheadSum);
+	
+	// but we're not obliged to include i-th item anyway
 	
 	return (maxSum, oneStepAheadSum);
 }
