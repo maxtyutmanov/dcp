@@ -10,8 +10,13 @@ For example, given s = "abcba" and k = 2, the longest substring with k distinct 
 
 void Main()
 {
-	Solve("abcba", 2).Dump();
-	Solve("abcba", 4).Dump();
+	Solve("abcba", 2).Dump("3");
+	Solve("abcba", 4).Dump("5");
+	Solve("aaaaabbaaaa", 1).Dump("5");
+	Solve("aaaabbbbbb", 2).Dump("10");
+	Solve("c", 2).Dump("1");
+	Solve("cccccc", 2).Dump("6");
+	Solve("abcdeff", 2).Dump("3");
 }
 
 int Solve(string s, int k)
