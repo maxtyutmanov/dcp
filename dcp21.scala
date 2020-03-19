@@ -1,4 +1,3 @@
-
 /*
     This problem was asked by Snapchat.
 
@@ -10,7 +9,20 @@
 object Solution {
   case class Interval(from: Int, to: Int)
   
-  trait PointInTime { val value: Int }
+  trait PointInTime { 
+    val value: Int;
+    def earlierThan(other: PointInTime): Boolean = {
+      if (value < other.value) true
+      else if (value > other.value) false
+      else {
+        // if values are same, we consider that previous class is finished first and the next class starts without intersection
+        this match {
+          case FinishPoint(_) => true
+          case _ => false
+        }
+      }
+    }
+  }
   case class StartPoint(value: Int) extends PointInTime
   case class FinishPoint(value: Int) extends PointInTime
   
@@ -22,6 +34,11 @@ object Solution {
     def onFinished: TraverseState = {
       TraverseState(currentClasses - 1, maxClasses)
     }
+  }
+  
+  def runSample4_finish_and_start_at_the_same_time() {
+    val intervals = List(Interval(30, 50), Interval(50, 60), Interval(60, 150))
+    println(solve(intervals))
   }
   
   def runSample3_all_intersect() {
@@ -41,7 +58,7 @@ object Solution {
   
   def solve(intervals: List[Interval]): Int = {
     val allPoints = intervals.flatMap(i => List[PointInTime](StartPoint(i.from), FinishPoint(i.to)))
-    val allPointsSorted = allPoints.sortBy(p => p.value)
+    val allPointsSorted = allPoints.sorted(Ordering.fromLessThan[PointInTime]((p1, p2) => p1.earlierThan(p2)))
     
     allPointsSorted.foldLeft(TraverseState(0, 0))((state, point) => point match {
       case StartPoint(_) => state.onStarted
@@ -53,3 +70,4 @@ object Solution {
 Solution.runSample1_some_intersect()
 Solution.runSample2_no_intersections()
 Solution.runSample3_all_intersect()
+Solution.runSample4_finish_and_start_at_the_same_time()
