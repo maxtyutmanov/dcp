@@ -1,6 +1,6 @@
+  
 /*
  *  This problem was asked by Google.
-
     You are given an M by N matrix consisting of booleans that represents a board. Each True boolean represents a wall. Each False boolean represents a tile you can walk on.
     
     Given this matrix, a start coordinate, and an end coordinate, return the minimum number of steps required to reach the end coordinate from the start. If there is no possible path, then return null. 
@@ -17,6 +17,8 @@
  */
 
 object Solution {
+  private val moveVectors = List(Coordinates(1, 0), Coordinates(-1, 0), Coordinates(0, 1), Coordinates(0, -1))
+  
   case class Coordinates(val row: Int, val col: Int) {
     def +(other: Coordinates): Coordinates = 
       Coordinates(row + other.row, col + other.col)
@@ -28,9 +30,6 @@ object Solution {
     
     def areValidCoords(c: Coordinates): Boolean = 
       c.row >= 0 && c.row < rowNum && c.col >= 0 && c.col < colNum
-      
-    def markAsInacessible(c: Coordinates): Unit = 
-      walls(c.row)(c.col) = true
     
     def rowNum: Int = walls.length
     def colNum: Int = {
@@ -96,27 +95,20 @@ object Solution {
   }
   
   def solve(b: Board, start: Coordinates, end: Coordinates): Option[Int] = {
-    subSolve(b, end, List(start), 0)
+    subSolve(b, end, Set(start), Set(), 0)
   }
   
   @annotation.tailrec
-  def subSolve(b: Board, end: Coordinates, currentSet: List[Coordinates], curLen: Int): Option[Int] = {
-    // UGLY SCALA BFS
-    
-    // filter the current set of coords to visit so that only accessible are left 
-    val accessibleSet = currentSet.filter(c => b.isAccessible(c))
-    // side effect: marking coordinates as visited so we won't stuck in an endless loop
-    accessibleSet.foreach(c => b.markAsInacessible(c))
-    
-    accessibleSet match {
-      case Nil => None
-      case _ => {
-        if (accessibleSet.find(c => c == end).isDefined) Some(curLen)
-        else {
-          val moveVectors = List(Coordinates(1, 0), Coordinates(-1, 0), Coordinates(0, 1), Coordinates(0, -1))
-          val nextSet = accessibleSet.flatMap(c => moveVectors.map(c + _)).filter(c => b.areValidCoords(c))
-          subSolve(b, end, nextSet, curLen + 1)
-        }
+  def subSolve(b: Board, target: Coordinates, current: Set[Coordinates], visited: Set[Coordinates], curLen: Int): Option[Int] = {
+    if (current.isEmpty) None
+    else {
+      if (current.contains(target)) Some(curLen)
+      else {
+        val nextSet = current
+          .flatMap(c => moveVectors.map(c + _))
+          .filter(c => b.isAccessible(c) && !visited.contains(c))
+          
+        subSolve(b, target, nextSet, visited ++ current, curLen + 1)
       }
     }
   }
