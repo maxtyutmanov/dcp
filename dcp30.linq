@@ -28,43 +28,40 @@ long Solve(int[] h)
 	var leftIx = 0;
 	var rightIx = h.Length - 1;
 	var water = 0L;
-	var direction = 0;
 	
-	while (leftIx < rightIx)
+	// pass from left to right
+	
+	var success = true;
+	while (success)
 	{
-		var lastSuccess = false;
-		
-		if (direction == 0)
-		{	
-			for (var i = leftIx + 1; i <= rightIx; i++)
+		success = false;
+		for (var i = leftIx + 1; i <= rightIx; i++)
+		{
+			if (h[i] >= h[leftIx])
 			{
-				if (h[i] >= h[leftIx])
-				{
-					water += GetWater(h, leftIx, i);
-					leftIx = i;
-					lastSuccess = true;
-					break;
-				}
+				water += GetWater(h, leftIx, i);
+				leftIx = i;
+				success = true;
+				break;
 			}
 		}
-		else
+	}
+	
+	// pass from right to left
+	
+	success = true;
+	while (success)
+	{
+		success = false;
+		for (var i = rightIx - 1; i >= leftIx; i--)
 		{
-			for (var i = rightIx - 1; i >= leftIx; i--)
+			if (h[i] >= h[rightIx])
 			{
-				if (h[i] >= h[rightIx])
-				{
-					water += GetWater(h, i, rightIx);
-					rightIx = i;
-					lastSuccess = true;
-					break;
-				}
+				water += GetWater(h, i, rightIx);
+				rightIx = i;
+				success = true;
+				break;
 			}
-		}
-		
-		if (!lastSuccess)
-		{
-			// change traversal direction if the last pass did not work
-			direction = 1 - direction;
 		}
 	}
 	
