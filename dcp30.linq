@@ -65,6 +65,9 @@ long Solve(int[] h)
 		}
 	}
 	
+    if (leftIx < rightIx)
+		throw new Exception("WTF");
+	
 	return water;
 }
 
