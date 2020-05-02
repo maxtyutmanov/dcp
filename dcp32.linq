@@ -40,6 +40,14 @@ void Main()
 	};
 	
 	Solve(er3).Dump("Should be possible");
+
+	var er4 = new double[2, 2]
+	{
+		{ 1, 1.0/60 },
+		{ 61, 1 }
+	};
+
+	Solve(er4).Dump("Should be possible");
 }
 
 bool Solve(double[,] er)
