@@ -18,10 +18,23 @@ void Main()
 	Solve("race").Dump("should be ecarace");
 	Solve("rac").Dump("should be carac, NOT racar");
 	Solve("rabdar").Dump("should be rabdbar");
+
+	Solve("ab").Dump();
+	Solve("ba").Dump();
+	Solve("alabcala").Dump();
+	Solve("test").Dump();
+	Solve("already").Dump();
+	Solve("somebigbigword").Dump();
+	Solve("somebigbigwordqweqwqwe").Dump();
+	Solve("somebigbigwordfortesting").Dump();
+	Solve("somebigbigwordfortestingsomebigbigwordfortestingsomebigbigwordfortestingsomebigbigwordfortesting").Dump();
 }
 
-string Solve(string word)
+string Solve(string word, Dictionary<string, string> cache = null)
 {
+	if (cache == null) cache = new Dictionary<string, string>();
+	else if (cache.ContainsKey(word)) return cache[word];
+	
 	if (word.Length <= 1)
 	{
 		return word;
@@ -30,7 +43,9 @@ string Solve(string word)
 	if (word[0] == word[word.Length - 1])
 	{
 		// if first and last char in the word match, then we can ignore them and only need to make the "inner" part of the word a palindrome
-		return word[0] + Solve(word.Substring(1, word.Length - 2)) + word[word.Length - 1];
+		var res = word[0] + Solve(word.Substring(1, word.Length - 2), cache) + word[word.Length - 1];
+		cache[word] = res;
+		return res;
 	}
 	else
 	{
@@ -41,17 +56,22 @@ string Solve(string word)
 		// then we need to select the shortest word out of two. If they have the same length, choose the first alphabetically
 		
 		// if we insert the last char first
-		var leftWord = word[word.Length - 1] + Solve(word.Substring(0, word.Length - 1)) + word[word.Length - 1];
+		var leftWord = word[word.Length - 1] + Solve(word.Substring(0, word.Length - 1), cache) + word[word.Length - 1];
 		// if we insert the first char last
-		var rightWord = word[0] + Solve(word.Substring(1, word.Length - 1)) + word[0];
+		var rightWord = word[0] + Solve(word.Substring(1, word.Length - 1), cache) + word[0];
+		
+		string res;
 		
 		if (leftWord.Length < rightWord.Length)
-			return leftWord;
+			res = leftWord;
 		else if (leftWord.Length > rightWord.Length)
-			return rightWord;
+			res = rightWord;
 		else if (leftWord.CompareTo(rightWord) < 0)
-			return leftWord;
+			res = leftWord;
 		else
-			return rightWord;
+			res = rightWord;
+			
+		cache[word] = res;
+		return res;
 	}
 }
