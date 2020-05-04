@@ -16,6 +16,7 @@ void Main()
 {
 	Solve("google").Dump("should be elgoogle");
 	Solve("race").Dump("should be ecarace");
+	Solve("rac").Dump("should be carac, NOT racar");
 	Solve("rabdar").Dump("should be rabdbar");
 }
 
@@ -28,10 +29,17 @@ string Solve(string word)
 	
 	if (word[0] == word[word.Length - 1])
 	{
+		// if first and last char in the word match, then we can ignore them and only need to make the "inner" part of the word a palindrome
 		return word[0] + Solve(word.Substring(1, word.Length - 2)) + word[word.Length - 1];
 	}
 	else
 	{
+		// if first and last char do not match, then we can try two options:
+		// 1) insert the same char as the last one in the beginning of the word
+		// 2) insert the same char as the first one in the end of the word
+		
+		// then we need to select the shortest word out of two. If they have the same length, choose the first alphabetically
+		
 		// if we insert the last char first
 		var leftWord = word[word.Length - 1] + Solve(word.Substring(0, word.Length - 1)) + word[word.Length - 1];
 		// if we insert the first char last
