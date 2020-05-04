@@ -21,12 +21,8 @@ IEnumerable<double> Solve(IEnumerable<int> stream)
 	// min heap for right
 	var right = new BinaryHeap((parent, child) => parent <= child);
 	
-	var en = stream.GetEnumerator();
-
-	while (en.MoveNext())
+	foreach (var val in stream)
 	{
-		var val = en.Current;
-
 		// insert the value into the right heap
 		if (left.Count != 0 && val <= left.Top)
 		{
