@@ -31,6 +31,20 @@ object Tests {
     val flights = Set(Flight("A", "B"), Flight("A", "C"), Flight("B", "C"), Flight("C", "A"))
     println("Should be ['A', 'B', 'C', 'A', 'C']: " + Solution.solve(flights, "A"))
   }
+  
+  def runSample4() = {
+    val flights = Set(
+  		Flight("SRT", "SFO"),
+  		Flight("SFO", "JFK"),
+  		Flight("JFK", "SFO"),
+  		Flight("SFO", "SRT"),
+  		// adding a loop!
+  		Flight("JFK", "LAX"),
+  		Flight("LAX", "JFK"),
+  	)
+    
+    println(Solution.solve(flights, "SRT"))
+  }
 }
 
 object Solution {
@@ -51,3 +65,4 @@ object Solution {
 Tests.runSample1()
 Tests.runSample2()
 Tests.runSample3()
+Tests.runSample4()
