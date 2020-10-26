@@ -25,9 +25,9 @@ class StringChopperDcp57Test extends FunSuite with GeneratorDrivenPropertyChecks
       val maxLength = words.toStream.map(_.length).max
       val text = words.mkString(" ")
       val linesOpt = StringChopper.chop(text, maxLength)
-      linesOpt.map(lines => {
+      linesOpt.exists(lines => {
         lines.forall(_.length <= maxLength)
-      }).getOrElse(false)
+      })
     }
   }
 
