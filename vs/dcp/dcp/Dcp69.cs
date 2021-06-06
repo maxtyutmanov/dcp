@@ -37,11 +37,6 @@ namespace dcp
 
         public static long Solve(IReadOnlyList<int> xs)
         {
-            // find max product of
-            // 1. two negative numbers + 1 positive number
-            // 2. 3 largest numbers
-            // 3. if there are no positive numbers, find max product of 3 largest negative numbers
-
             // max product can be composed of: 
             // 1. two smallest numbers (if they are negative) multiplied by 1 largest number (if it is positive)
             // 2. 3 largest numbers, regardless of their sign
