@@ -37,6 +37,7 @@ namespace dcp
     {
         public static void Test()
         {
+            // no cycle
             var pathLabels = "ABACA".ToArray();
             var edges = new []
             {
@@ -48,6 +49,7 @@ namespace dcp
 
             Console.WriteLine("Max value for graph 1: {0}", Solve(edges, pathLabels));
 
+            // cycle
             edges = new[]
             {
                 (0, 1),
@@ -59,6 +61,7 @@ namespace dcp
 
             Console.WriteLine("Max value for graph 2: {0}", Solve(edges, pathLabels));
 
+            // cycle
             pathLabels = "A".ToArray();
             edges = new[]
             {
@@ -66,6 +69,19 @@ namespace dcp
             };
 
             Console.WriteLine("Max value for graph 3: {0}", Solve(edges, pathLabels));
+
+            // multi-edges
+            pathLabels = "ABACA".ToArray();
+            edges = new[]
+            {
+                (0, 1),
+                (0, 2),
+                (2, 3),
+                (2, 3),
+                (3, 4)
+            };
+
+            Console.WriteLine("Max value for graph 4: {0}", Solve(edges, pathLabels));
         }
 
         public static int? Solve(IReadOnlyList<(int, int)> edgesList, char[] labels)
