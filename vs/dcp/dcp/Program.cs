@@ -6,7 +6,7 @@ namespace dcp
     {
         static void Main(string[] args)
         {
-            Dcp74.Test();
+            Dcp75.Test();
             Console.ReadLine();
         }
     }
